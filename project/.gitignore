@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+.model_cache/
+*.xlsx
+!.workbuddy/skills/scene-matcher/project/需求收集模板.xlsx

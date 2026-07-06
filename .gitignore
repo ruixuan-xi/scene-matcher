@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+.model_cache/
+.workbuddy/
+*_匹配结果.xlsx
+*_supplement.xlsx

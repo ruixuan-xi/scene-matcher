@@ -1,0 +1,163 @@
+<mxfile host="app.diagrams.net" modified="2026-06-28" agent="WorkBuddy" version="24.0.0">
+  <diagram name="场景智能去重系统五层架构" id="arch-5layer">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==================== LAYER 1: 输入校验层 ==================== -->
+        <mxCell id="2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=1;opacity=60;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1120" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="3" value="&lt;b&gt;1 输入校验层&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#6c8ebf;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=13;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="120" height="28" as="geometry"/>
+        </mxCell>
+        <!-- Excel 上传 -->
+        <mxCell id="4" value="&lt;b&gt;Excel 上传（7列模板）&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;openpyxl 解析&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontColor=#1E4A73;" vertex="1" parent="1">
+          <mxGeometry x="80" y="78" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <!-- 模板校验 -->
+        <mxCell id="5" value="&lt;b&gt;模板校验&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;列完整 + 字段必填&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontColor=#1E4A73;" vertex="1" parent="1">
+          <mxGeometry x="330" y="78" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <!-- 步骤详细度检查 -->
+        <mxCell id="6" value="&lt;b&gt;步骤详细度检查&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;正则检测分步编号&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontColor=#1E4A73;" vertex="1" parent="1">
+          <mxGeometry x="570" y="78" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!--  → 箭头 -->
+        <mxCell id="30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#6c8ebf;strokeWidth=1.5;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LAYER 2: 语义向量匹配引擎 ==================== -->
+        <mxCell id="7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=1;opacity=50;" vertex="1" parent="1">
+          <mxGeometry x="50" y="200" width="1120" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="&lt;b&gt;2 语义向量匹配引擎&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#9673a6;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=13;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="50" y="200" width="170" height="28" as="geometry"/>
+        </mxCell>
+        <!-- 文本拼接+向量化 -->
+        <mxCell id="9" value="&lt;b&gt;文本拼接 + 向量化&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;MiniLM-L6-v2 384维&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=13;fontColor=#3D3060;" vertex="1" parent="1">
+          <mxGeometry x="80" y="248" width="380" height="50" as="geometry"/>
+        </mxCell>
+        <!-- pgvector 余弦检索 -->
+        <mxCell id="10" value="&lt;b&gt;pgvector 余弦检索 Top-1&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=13;fontColor=#3D3060;" vertex="1" parent="1">
+          <mxGeometry x="530" y="248" width="230" height="50" as="geometry"/>
+        </mxCell>
+
+        <!--  → 箭头 -->
+        <mxCell id="32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== 通过写到这里 (蓝色虚线) ==================== -->
+        <mxCell id="33" value="通过写到这里" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1976D2;strokeWidth=1.5;dashed=1;fontSize=11;fontColor=#1976D2;dashPattern=6 4;" edge="1" parent="1" source="6" target="9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="185"/>
+              <mxPoint x="270" y="185"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== LAYER 3: 判定逻辑 ==================== -->
+        <mxCell id="11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=1;opacity=50;" vertex="1" parent="1">
+          <mxGeometry x="50" y="360" width="1120" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="&lt;b&gt;3 判定逻辑&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#d6b656;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=13;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="50" y="360" width="100" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- >0.85 已有场景 -->
+        <mxCell id="13" value="&lt;b&gt;&amp;gt; 0.85&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;已有场景&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="418" width="215" height="64" as="geometry"/>
+        </mxCell>
+        <!-- 蓝色圆点 -->
+        <mxCell id="17" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="274" y="444" width="14" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- 0.75~0.85 待确认 -->
+        <mxCell id="14" value="&lt;b&gt;0.75 ~ 0.85&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;待确认&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontColor=#8B6914;" vertex="1" parent="1">
+          <mxGeometry x="320" y="418" width="215" height="64" as="geometry"/>
+        </mxCell>
+        <!-- 黄色圆点 -->
+        <mxCell id="18" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F57C00;strokeColor=#B8831E;" vertex="1" parent="1">
+          <mxGeometry x="524" y="444" width="14" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- <0.75 新场景 -->
+        <mxCell id="15" value="&lt;b&gt;&amp;lt; 0.75&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;新场景&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#2D5A3D;" vertex="1" parent="1">
+          <mxGeometry x="570" y="418" width="215" height="64" as="geometry"/>
+        </mxCell>
+        <!-- 绿色圆点 -->
+        <mxCell id="19" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#388E3C;strokeColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="774" y="444" width="14" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- 步骤不详细 退回补充 -->
+        <mxCell id="16" value="&lt;b&gt;步骤不详细&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px;&quot;&gt;退回补充&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontColor=#C62828;" vertex="1" parent="1">
+          <mxGeometry x="820" y="418" width="200" height="64" as="geometry"/>
+        </mxCell>
+        <!-- 红色圆点 -->
+        <mxCell id="20" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#D32F2F;strokeColor=#C62828;" vertex="1" parent="1">
+          <mxGeometry x="1009" y="444" width="14" height="14" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== 不通过 (红色虚线) ==================== -->
+        <mxCell id="34" value="不通过" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#D32F2F;strokeWidth=1.5;dashed=1;fontSize=11;fontColor=#D32F2F;dashPattern=6 4;" edge="1" parent="1" source="6" target="16">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="170"/>
+              <mxPoint x="1060" y="170"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== pgvector → 判定逻辑 箭头 ==================== -->
+        <mxCell id="35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#9673a6;strokeWidth=1.5;" edge="1" parent="1" source="10" target="13">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="300" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== LAYER 4: 输出层 ==================== -->
+        <mxCell id="21" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=1;opacity=50;" vertex="1" parent="1">
+          <mxGeometry x="50" y="570" width="1120" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="22" value="&lt;b&gt;4 输出层&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#82b366;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=13;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="50" y="570" width="90" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="23" value="&lt;font style=&quot;font-size:12px;&quot;&gt;Excel 输出：7列原始 + 7列扩展，蓝/黄/绿/红 四色标注&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=12;fontColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="100" y="618" width="970" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- 判定逻辑 → 输出层 -->
+        <mxCell id="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#82b366;strokeWidth=1.5;" edge="1" parent="1" source="11" target="21">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LAYER 5: 存储架构 ==================== -->
+        <mxCell id="24" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#b3b3b3;strokeWidth=1;opacity=50;" vertex="1" parent="1">
+          <mxGeometry x="50" y="700" width="1120" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="&lt;b&gt;5 存储架构&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=#b3b3b3;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=13;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="50" y="700" width="110" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="26" value="&lt;font style=&quot;font-size:12px;&quot;&gt;Supabase PostgreSQL + pgvector（ivfflat 索引，业务与向量统一存储）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b3b3b3;fontSize=12;fontColor=#5A4A3A;" vertex="1" parent="1">
+          <mxGeometry x="120" y="745" width="520" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- 输出层 → 存储架构 -->
+        <mxCell id="37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#999999;strokeWidth=1.5;" edge="1" parent="1" source="21" target="24">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
