@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>场景库 · 卡片展示</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root{--bg:#f5f7fb;--card:#fff;--border:#e6ebf2;--text:#1f2937;--muted:#6b7280;--accent:#0ea5e9;--accent-soft:#e0f2fe;--shadow:0 2px 8px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.04);--shadow-hover:0 8px 28px rgba(14,165,233,.18),0 2px 8px rgba(15,23,42,.08)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+  header{background:linear-gradient(135deg,#0ea5e9 0%,#06b6d4 100%);color:#fff;padding:40px 32px 32px;position:relative;overflow:hidden}
+  header::before{content:"";position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.08)}
+  header::after{content:"";position:absolute;bottom:-80px;right:80px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06)}
+  .header-inner{max-width:1280px;margin:0 auto;position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+  .title-block h1{font-size:28px;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+  .subtitle{opacity:.9;font-size:14px}
+  .stats{display:flex;gap:24px;margin-top:20px;font-size:13px;flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.18);padding:8px 16px;border-radius:20px;backdrop-filter:blur(6px)}
+  .stat strong{font-size:18px;margin-right:4px;font-weight:600}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border:none;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+  .btn-primary{background:#fff;color:#0ea5e9}
+  .btn-primary:hover{background:#f0f9ff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .toolbar{max-width:1280px;margin:-18px auto 0;padding:0 32px;position:relative;z-index:2}
+  .toolbar-inner{background:var(--card);border-radius:14px;padding:16px 20px;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .search-box{flex:1;min-width:220px;position:relative}
+  .search-box input{width:100%;padding:10px 14px 10px 40px;border:1px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:border .2s,box-shadow .2s;background:#f8fafc}
+  .search-box input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .filter-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:#f8fafc;font-size:13px;cursor:pointer;transition:all .2s;user-select:none;display:inline-flex;align-items:center;gap:6px}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .chip .count{font-size:11px;background:rgba(0,0,0,.08);padding:1px 7px;border-radius:10px}
+  .chip.active .count{background:rgba(255,255,255,.25)}
+  main{max-width:1280px;margin:28px auto 60px;padding:0 32px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--dept-color,var(--accent)),var(--dept-color2,#06b6d4))}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--accent-soft)}
+  .dept-badge{display:inline-block;font-size:12px;font-weight:500;padding:3px 10px;border-radius:6px;background:var(--dept-bg,var(--accent-soft));color:var(--dept-color,var(--accent));margin-bottom:12px;align-self:flex-start}
+  .card-title{font-size:17px;font-weight:600;margin-bottom:10px;line-height:1.4}
+  .card-meta{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:12px;color:var(--muted);margin-bottom:14px}
+  .card-meta span{display:inline-flex;align-items:center;gap:4px}
+  .divider{height:1px;background:var(--border);margin:4px 0 12px}
+  .section-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-bottom:6px}
+  .steps{font-size:13px;color:#374151;white-space:pre-wrap;line-height:1.7;max-height:140px;overflow:hidden;position:relative;transition:max-height .3s}
+  .steps.expanded{max-height:2000px}
+  .steps.collapsed::after{content:"";position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--card));pointer-events:none}
+  .expand-btn{align-self:flex-start;margin-top:8px;font-size:12px;color:var(--accent);cursor:pointer;background:none;border:none;padding:4px 0;font-weight:500}
+  .expand-btn:hover{text-decoration:underline}
+  .pain{margin-top:12px;padding:10px 12px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:6px;font-size:12px;color:#92400e;line-height:1.6}
+  .loading,.error,.empty{text-align:center;padding:80px 20px;color:var(--muted)}
+  .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .error-icon,.empty-icon{font-size:48px;margin-bottom:12px}
+  .error{color:#dc2626}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:100;opacity:0;transition:opacity .3s;pointer-events:none}
+  .toast.show{opacity:1}
+  @media (max-width:640px){header{padding:28px 16px}h1{font-size:22px}.toolbar,main{padding:0 16px}.stats{gap:10px}.header-inner{flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="title-block">
+      <h1>🎯 RPA 场景库</h1>
+      <div class="subtitle">智能去重沉淀 · 卡片式浏览 · 实时更新</div>
+      <div class="stats">
+        <div class="stat"><strong id="total-count">-</strong>个场景</div>
+        <div class="stat"><strong id="dept-count">-</strong>个部门</div>
+        <div class="stat" id="current-filter">加载中...</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="export-btn" disabled onclick="exportExcel()">📥 导出 Excel</button>
+  </div>
+</header>
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <div class="search-box"><span class="search-icon">🔍</span><input id="search" type="text" placeholder="搜索场景名称、流程、痛点..." disabled /></div>
+    <div class="filter-chips" id="chips"></div>
+  </div>
+</div>
+<main>
+  <div class="loading" id="loading"><div class="spinner"></div><div>正在加载场景数据...</div></div>
+  <div class="error" id="error" style="display:none"><div class="error-icon">⚠️</div><div id="error-msg">加载失败</div><button class="btn btn-primary" style="margin-top:16px" onclick="loadData()">重试</button></div>
+  <div class="grid" id="grid" style="display:none"></div>
+  <div class="empty" id="empty" style="display:none"><div class="empty-icon">📭</div><div>没有匹配的场景</div></div>
+</main>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
